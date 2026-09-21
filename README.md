@@ -117,30 +117,71 @@ not claim to answer a laundry question.
 
 ## Sample Answer
 
-<!-- One complete question and answer, pasted as text, with the source line
-     visible. Milestone 4. -->
+**Question:** How much does one wash cost in Aldridge Hall, and what payment
+method do the machines accept?
 
-**Question:**
+**Answer (actual CLI output):**
 
-**Answer:**
+```text
+One wash in Aldridge Hall costs $1.75, and the machines accept card only (housing_aldridge_hall_laundry.txt).
 
+Sources retrieved: housing_aldridge_hall_laundry.txt, housing_calder_annexe.txt, housing_innisfree_hall_laundry.txt, housing_old_brewhouse.txt, housing_old_brewhouse_laundry.txt
 ```
-```
 
-**My relevance cutoff:**
+Produced by `app.py::ask_pipeline` and `generate.py::answer_from_chunks` using
+`gemini-3.5-flash-lite`. The real call used 551 input tokens and 32 output
+tokens. The full grounding instruction, assembled prompt, answer, and source
+line are saved in [the CLI transcript](results/milestone4_sample_answer.txt).
 
-<!-- The number you set in config.py, and how you got there.
-
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
-
-     Milestone 4. -->
+**My relevance cutoff:** `0.64` (cosine distance; lower is closer).
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| How are juniors and seniors ordered in the housing lottery before random tie-breaking? | Yes | 0.214776 |
+| How much does one wash cost in Aldridge Hall, and what payment method do the machines accept? | Yes | 0.276681 |
+| How many days into the semester can I change my meal plan, and where does a downgrade refund go? | Yes | 0.176299 |
+| When does the library close during reading week compared with term time? | Yes | 0.448550 |
+| What minimum grade earns a pass under the pass/fail option? | Yes | 0.329099 |
+| What is the capital of Mongolia? | No | 0.824593 |
+| How do I change the oil in a diesel engine? | No | 0.923117 |
+| Who won the 1994 World Cup? | No | 0.885860 |
+| What is the recommended dosage of ibuprofen for a headache? | No | 0.844232 |
+| How do I write a for loop in Rust? | No | 0.890692 |
+
+The covered questions span 0.176299–0.448550; unrelated questions span
+0.824593–0.923117. The midpoint between the largest covered distance and
+smallest unrelated distance is about 0.637, so 0.64 leaves space on both sides.
+On these ten questions it passes all five covered questions and refuses all
+five unrelated ones. This calibration sample cannot establish performance on
+new questions: a relevant paraphrase above 0.64 would be refused, and an
+unsupported question below 0.64 could reach generation. The gate uses a strict
+less-than comparison, so a distance exactly equal to 0.64 is refused.
+
+**Retrieval review and top-k:** I kept `TOP_K = 5`. The first result for each
+of the five questions contains the required facts. Reading all five results
+for the first three questions also exposed noise: the housing-lottery query
+retrieves an Atrium dining post, and the Aldridge query retrieves laundry rules
+for other buildings. Those matches share broad topic words but do not answer
+the exact question. Keeping five preserves context for other questions; it does
+not mean all five results are equally relevant. The frozen criterion explicitly
+measures the top five. Full distances and the first three sets of chunk texts
+are in [the retrieval record](results/milestone4_retrieval.md), with all ten sets
+of full chunks in [the raw data](results/milestone4_retrieval.json).
+
+**Grounding review:** The existing instruction requires only provided evidence,
+a refusal when evidence is missing, and a source filename. In the sample above,
+the model correctly selected Aldridge's $1.75/card-only rule despite receiving
+other buildings' prices and payment methods. It did not import their rules.
+The existing instruction was retained. Four additional real answers also
+matched their required facts and named the correct source; no drift requiring
+a prompt change was observed in this development pass. The “Sources retrieved” line lists available
+context, whereas the filename in the answer identifies the source actually used.
+
+**Refusal check:** All five unrelated questions returned exactly
+“I don't have enough information about that.” with zero additional model calls.
+The four additional covered answers and all five refusal outputs are saved in
+[the answer-check record](results/milestone4_answer_checks.md). This is one
+milestone 4 development pass, not the three-run unit 2 evaluation.
 
 ## How I Used AI
 

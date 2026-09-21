@@ -1,0 +1,61 @@
+  (best distance 0.277, cutoff 0.64)
+
+======================================================================
+System instruction sent with the prompt
+======================================================================
+You answer questions using only the documents provided to you.
+
+Rules:
+- Use only the information in the documents below. Do not use anything you know from elsewhere.
+- If the documents don't cover the question, say you don't have enough information. Do not guess.
+- Name the document your answer came from, using the filename given in each excerpt.
+- Be brief. Two or three sentences is usually enough.
+
+======================================================================
+The assembled prompt, exactly as sent
+======================================================================
+Documents:
+
+[from housing_aldridge_hall_laundry.txt]
+Laundry in Aldridge Hall
+
+Machines take $1.75 wash, $1.50 dry, card only. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.
+
+Best time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.
+
+[from housing_old_brewhouse_laundry.txt]
+Laundry in Old Brewhouse
+
+Machines take $1.50 wash, $1.50 dry, coin only, and the machines are old. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.
+
+Best time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.
+
+[from housing_innisfree_hall_laundry.txt]
+Laundry in Innisfree Hall
+
+Machines take $1.75 wash, $1.75 dry, app-based. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.
+
+Best time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.
+
+[from housing_calder_annexe.txt]
+Calder Annexe — what it's actually like
+
+Laundry costs $2.00 wash, $1.75 dry, app-based. On noise: depends entirely on your cluster; there's no building-wide pattern.
+
+[from housing_old_brewhouse.txt]
+Old Brewhouse — what it's actually like
+
+Laundry costs $1.50 wash, $1.50 dry, coin only, and the machines are old. On noise: sound carries strangely because of the original brick; a room two floors up can be louder than next door.
+
+---
+
+Question: How much does one wash cost in Aldridge Hall, and what payment method do the machines accept?
+
+Answer using only the documents above, and name the file you used.
+======================================================================
+
+One wash in Aldridge Hall costs $1.75, and the machines accept card only (housing_aldridge_hall_laundry.txt).
+
+Sources retrieved: housing_aldridge_hall_laundry.txt, housing_calder_annexe.txt, housing_innisfree_hall_laundry.txt, housing_old_brewhouse.txt, housing_old_brewhouse_laundry.txt
+
+1 model calls this session, 583 tokens (551 in, 32 out)
