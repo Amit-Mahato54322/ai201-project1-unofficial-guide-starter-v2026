@@ -1,132 +1,110 @@
 # Acceptance criteria — The Unofficial Guide
 
-Five criteria that say what "working" means for this system, written in unit 1
-**before** any results existed.
-
-An acceptance criterion names a target: a number, a count, a rate, or something
-a person could plainly observe. *"Retrieval works"* is an opinion. *"For at
-least 4 of my 5 test questions, the top results include a chunk containing the
-answer"* is a criterion.
-
-Under each one, write a sentence or two on **why that target** and not a
-stricter or looser one. A reason that says something about your corpus or your
-pipeline earns credit; *"80% seemed reasonable"* does not.
-
-> Missing your own targets next unit costs you nothing. Setting a target so
-> easy you can't miss it does.
-
----
+Corpus: `campus_life`. These targets and the five question/`expects` pairs in
+`questions.py` are fixed before milestone 3 chunking and milestone 4 retrieval
+measurements. The phrases are useful scoring hints; they are not sufficient on
+their own to establish that a complete answer is correct.
 
 ## 1. Retrieved chunks contain the answer
 
-For at least 4 of my 5 test questions, the retrieved chunks include one that
-contains the answer.
+For at least 4 of my 5 test questions in `questions.py`, the top 5 retrieved
+chunks include at least one chunk containing the facts needed to answer every
+part of the question.
 
-**Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
-
----
+**Why this target:** The meal-plan, laundry, and library questions each require
+keeping two related facts together, while several campus posts repeat similar
+language about different buildings. Four of five allows one retrieval miss but
+still requires success on most of these paired-fact questions; three would
+leave too much of this small test set unanswered.
 
 ## 2. Every answer names a source
 
-Every answer the system produces names at least one source document.
+For all 5 test questions in `questions.py`, the answer text names at least one
+retrieved source filename; a separate “Sources retrieved” line does not count,
+and a refusal counts as a miss for these in-corpus questions.
 
-**Why this target:**
-<!-- Why all five and not four? What about your setup makes that achievable —
-     or what would have to go wrong for it not to be? -->
-
----
+**Why this target:** Every retrieved chunk already carries its filename, and
+the generation instruction asks the model to name it, so there is no missing
+metadata that would justify accepting four citations out of five. Requiring
+all five makes unsupported-looking answers visible even when their facts sound
+plausible.
 
 ## 3. The relevance gate stops out-of-corpus questions
 
-When I ask a question my documents clearly don't cover, the relevance gate
-stops it and the system returns "I don't have enough information about that" —
-in at least 4 of 5 tries.
+For at least 4 of the 5 questions in `OUT_OF_SCOPE`, the relevance gate stops
+generation and returns exactly “I don't have enough information about that.”
+without making a model call.
 
-<!-- The five questions are the ones in `OUT_OF_SCOPE` at the bottom of
-     `questions.py`, and `run_eval.py` puts them through the gate and writes
-     what happened into your run log. Swap them for your own if you'd rather —
-     just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
+**Why this target:** The five prompts concern unrelated subjects such as engine
+maintenance and world sports, rather than campus life, so most should be easy
+to reject. Four of five tolerates one accidental semantic match without
+accepting a gate that routinely passes unrelated questions; distance overlap
+has not yet been measured.
 
-**Why this target:**
-<!-- What did your distances look like when you set the cutoff in Milestone 4?
-     Was there a clean gap, or did the two groups overlap? -->
+## 4. Sample chunks preserve context and complete sentences
 
----
+At least 4 of the 5 chunks printed by `python app.py chunks -n 5` include their
+source document's title and at least one complete body sentence, with no body
+sentence cut off at either boundary.
 
-## 4. Something about your chunks
+**Why this target:** Campus posts often name the building or course only in the
+title, and a laundry price or opening time without that name is ambiguous.
+Four of five requires context-preserving boundaries in most of the sample,
+while allowing one unusual source format rather than assuming all short posts
+are perfectly structured.
 
-<!-- YOU WRITE THIS ONE.
+## 5. Answers preserve exact facts and conditions
 
-     How would you know if your chunks were the right size? Name something
-     countable or observable.
+At least 4 of the 5 answers to `questions.py` correctly include every fact in
+the corresponding reference row below, without adding a conflicting number,
+condition, or claim not supported by the retrieved text. A refusal counts as
+a miss.
 
-     Examples of the right shape — don't copy these, they should come from
-     what you actually saw in Milestone 3:
-       - "At least 4 of 5 sampled chunks read as a complete thought, with no
-          sentence cut in half at either end."
-       - "No chunk is shorter than 200 characters, since anything below that
-          in my corpus turned out to be a heading with no content under it." -->
+| Question topic | Required facts | Reference document |
+|---|---|---|
+| Housing lottery | Juniors and seniors are ordered by accumulated credit hours before random tie-breaking. | `admin_housing_lottery.txt` |
+| Aldridge wash | One wash costs $1.75; payment is card only. | `housing_aldridge_hall_laundry.txt` |
+| Meal-plan change | The window is the first ten days of the semester; a downgrade refund goes to the student account. | `admin_meal_plan_changes.txt` |
+| Library closing | Reading week closes at 10pm; term time closes at 2am. | `study_library_hours.txt` |
+| Pass/fail grade | A pass requires C- or better. | `admin_pass_fail_option.txt` |
 
+**Why this target:** A fluent answer that swaps term-time and reading-week hours
+or omits card-only payment can send a student to the wrong place at the wrong
+time. Four complete, accurate answers out of five is more demanding than merely
+matching an `expects` phrase, while allowing one generation failure to diagnose
+in unit 2.
 
+## Self-check before testing
 
-**Why this target:**
+The assignment's separately named self-check was not supplied in the repository.
+The following checks use the requirements in the milestone: a defined sample,
+a count or observable outcome, a reason for the target, and a test another
+reader can perform. No retrieval or generated-answer results were used to set
+these targets.
 
+For each criterion, this is exactly how to test the sentence as written:
 
+1. Retrieve the top five chunks for each question. Read the chunks against all
+   parts of that question and count questions with one sufficient chunk. Pass
+   at four or five.
+2. Read each of the five answer texts and compare filenames in the text with
+   that question's retrieved filenames. Count refusals and answers with no
+   matching filename as misses. Pass only at five.
+3. Send each of the five `OUT_OF_SCOPE` questions through the pipeline. Record
+   the gate decision, exact returned text, and change in model-call count. Count
+   cases with a refusal, the specified text, and zero additional calls. Pass
+   at four or five.
+4. Print the specified five chunks and compare each with its source file.
+   Count chunks containing the title and a complete body sentence, without a
+   truncated boundary sentence. Pass at four or five.
+5. Compare each answer with its reference row and retrieved text. Count it only
+   if it includes every required fact and no unsupported or conflicting claim.
+   Pass at four or five.
 
----
+## Unit 2 preservation rule
 
-## 5. Your choice
-
-<!-- YOU WRITE THIS ONE TOO.
-
-     Pick something you actually care about getting right. It could be about
-     speed, about refusals, about a particular kind of question your corpus
-     handles badly, about source attribution being correct rather than merely
-     present — anything, as long as it names a number or an observable
-     outcome. -->
-
-
-
-**Why this target:**
-
-
-
----
-
-<!-- ─────────────────────────────────────────────────────────────────────────
-     UNIT 2 — read this before you change anything above.
-
-     If a criterion turns out to be BROKEN rather than merely unmet, you can
-     revise it, and that earns credit. But never delete or edit the original
-     line. Add the revision underneath it, like this:
-
-         ## 1. Retrieved chunks contain the answer
-
-         For at least 4 of my 5 test questions, the retrieved chunks include
-         one that contains the answer.
-
-         **Why this target:** ...
-
-         > **Revised in unit 2:** For at least 4 of 5 questions, the top three
-         > results contain the answer.
-         >
-         > **Why revised:** I couldn't judge "the chunks include one that
-         > contains the answer" the same way twice — I scored two questions
-         > differently on Monday than on Wednesday. The new version is
-         > something I can actually check.
-
-     That's a revision because the criterion couldn't be MEASURED.
-
-     Lowering a target because you missed it is not a revision, and it costs
-     you the point:
-
-         ✗ "I said 4 of 5 but got 2 of 5, so 2 of 5 is more realistic."
-
-     A number you missed stays where it is, gets diagnosed, and gets a fix
-     attempted. That's where the points are.
-
-     The whole reason the originals stay visible is so someone can see what you
-     said before you knew the answer.
-     ───────────────────────────────────────────────────────────────────────── -->
+Keep these original criteria and reasons visible. If a criterion cannot be
+measured reliably, add a dated revision and explain the measurement problem
+underneath it. Do not lower a target because a run missed it. For criteria
+measured over three runs, the target must hold in every run; the deterministic
+chunk and gate checks need only one pass.
