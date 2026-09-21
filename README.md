@@ -180,23 +180,14 @@ milestone 4 development pass, not the three-run unit 2 evaluation.
 
 ## How I Used AI
 
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
+**1.** I asked AI to replace the fixed-window chunker with one suited to the
+campus-life posts. It implemented paragraph-based chunks with a 400-character
+soft target, repeated titles, and no body overlap. I haven’t made further
+changes to that implementation.
 
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
-
-     Milestone 5. -->
-
-**1.**
-
-**2.**
-
-<!-- ── Stretch features ─────────────────────────────────────────────────────
-     Doing one? Say so here BEFORE you start. A feature this README never
-     claims earns nothing.
-     ───────────────────────────────────────────────────────────────────────── -->
+**2.** I asked AI to measure retrieval distances and tune the relevance cutoff.
+It measured five covered and five unrelated questions, then changed the cutoff
+from 0.6 to 0.64. I haven’t adjusted that cutoff further.
 
 ---
 
