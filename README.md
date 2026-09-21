@@ -1,19 +1,11 @@
 # The Unofficial Guide
 
-<!-- Replace this line with your name and which corpus you picked. -->
+Amit Mahato · Corpus: `campus_life`
 
-> **This file is your submission.** Fill it in as you go — most sections get
-> written during the milestone that produces them, not at the end.
->
-> How the starter works, and every command you'll need, is in `RUNNING.md`.
-> Leave that file alone.
->
-> **Paste everything as text.** No screenshots, no video. A typed table gets
-> full credit; a picture of the same table gets none.
->
-> Delete these instruction blocks as you replace them. The `<!-- -->` comments
-> are notes to you and don't show up when the page renders — you can leave them
-> or remove them.
+Repository: https://github.com/Amit-Mahato54322/ai201-project1-unofficial-guide-starter-v2026
+
+Run instructions are in [RUNNING.md](RUNNING.md). Acceptance criteria and their
+pre-test targets are in [criteria.md](criteria.md).
 
 ---
 
@@ -21,11 +13,14 @@
 
 ## What This Does
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
+This project answers questions using 88 fictional campus-life posts supplied
+with the course, covering housing, dining, classes, administrative rules, and
+student services. It keeps titled paragraphs together, embeds them locally,
+and retrieves five relevant chunks for questions such as how much Aldridge
+laundry costs or when the library closes during reading week. A cosine-distance
+gate refuses questions without a sufficiently close match before making a
+Gemini call. Accepted questions receive a brief answer grounded in the retrieved
+posts and naming its source file.
 
 ## Chunking Strategy
 
