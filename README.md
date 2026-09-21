@@ -29,54 +29,91 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 400 characters as a soft target, including the title.
+**Overlap:** 0 body characters; repeat the source title on each chunk.
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
+Decision recorded before implementation: the `campus_life` documents are short
+posts with a title followed by one or more paragraphs. A housing post separates
+its description, good points, bad points, and laundry/noise details into
+paragraphs; its title is needed to tell which building those details describe.
+A 400-character target keeps the short administrative posts together while
+allowing longer housing posts to separate at paragraph boundaries.
 
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
+The chunker will pack whole paragraphs up to this target and repeat the title
+when it starts a new chunk. It will keep an oversized paragraph intact rather
+than split a sentence just to satisfy the size target. Body overlap is zero
+because whole paragraphs already preserve the sentence context; title repetition
+provides the building/course name without duplicating unrelated body text.
+`fallback_split` remains available for comparison.
 
-     Milestone 3. -->
+The real baseline index produced 88 chunks from 88 documents, averaging 317
+characters (shortest 178, longest 549). The replacement produces 100 chunks,
+averaging 282 characters (shortest 116, longest 400). The shortest new chunk is
+a whole paragraph with its title, not a trailing character fragment. All source
+body paragraphs are preserved once, in order; no source sentences are cut.
+The baseline is retained as index variant `milestone2-baseline`.
 
 ## Sample Chunks
 
-<!-- Five chunks, pasted as text. Label each one and name the file it came from
-     AND the function that produced it — the grader checks your code against
-     what you claim here.
+Printed by `python app.py --corpus campus_life chunks -n 5`.
 
-     `python app.py chunks -n 5` prints all three for you. Copy them straight
-     across.
+**Chunk 1** — source: `admin_add_drop_deadline.txt#0` — produced by: `chunker.py::split_documents`
 
-     Milestone 3. -->
+```text
+On the add/drop deadline
 
-**Chunk 1** — source: `` — produced by: ``
-
-```
+You can add a course through the end of the second week. Dropping is a longer window — through the end of week six — but a drop after week two shows as a W on your transcript. Nothing anywhere on the registrar's site says this plainly, and students find out from each other.
 ```
 
-**Chunk 2** — source: `` — produced by: ``
+**Chunk 2** — source: `course_cs_210.txt#0` — produced by: `chunker.py::split_documents`
 
-```
-```
+```text
+CS 210 Data Structures
 
-**Chunk 3** — source: `` — produced by: ``
+I'm a junior and I've done this twice now. Format is lecture with weekly labs; slides go up after class, not before. Assessment: two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
 
-```
-```
-
-**Chunk 4** — source: `` — produced by: ``
-
-```
+Expect 8 to 10 hours a week outside class.
 ```
 
-**Chunk 5** — source: `` — produced by: ``
+**Chunk 3** — source: `course_math_220_workload.txt#0` — produced by: `chunker.py::split_documents`
 
+```text
+Workload for MATH 220 Linear Algebra
+
+People keep asking so: 6 to 8 hours a week, almost all of it on problem sets. That's real time, not optimistic time.
+
+It's front-loaded — the first month is heavier than the rest, partly because you're learning the format.
 ```
+
+**Chunk 4** — source: `dining_the_ridgeway_cafe_followup.txt#0` — produced by: `chunker.py::split_documents`
+
+```text
+Re: The Ridgeway Café
+
+Adding to what people have said about The Ridgeway Café. The wait figure of 10 to 15 minutes at 12:30 matches what I've seen. If you're trying to eat between classes, go before 11:45 and it's a different building entirely.
+
+Also worth saying: seating is tight; about 40 seats for a building of 900. Nobody tells you this at orientation.
 ```
+
+**Chunk 5** — source: `housing_morrow_house.txt#0` — produced by: `chunker.py::split_documents`
+
+```text
+Morrow House — what it's actually like
+
+Just finished a year in this building. Built 1954, partially renovated 2008. Rooms are singles and doubles, hall bathrooms.
+
+The good: cheapest housing tier by about $900 a year, and the singles are real singles.
+
+The bad: known damp problem on the ground floor; two rooms were taken offline in 2024.
+```
+
+All five retain their source title and complete body sentences. The first
+three can independently answer: “When can I drop a course without a W?”,
+“Are CS 210 midterms and the final curved?”, and “How much weekly work does
+MATH 220 take?” The fourth answers when the café has its stated lunch queue;
+the fifth answers how much cheaper Morrow House is and what its damp problem is.
+The Morrow laundry paragraph is a separate titled chunk, so this sample does
+not claim to answer a laundry question.
 
 ## Sample Answer
 

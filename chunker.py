@@ -1,25 +1,8 @@
-"""
-Stage 2 of the pipeline: splitting documents into chunks.
+"""Stage 2: pack complete paragraphs, retaining each source title as context.
 
-⚠️ THIS IS THE FILE YOU CHANGE IN MILESTONE 3.
-
-`split_documents` below is deliberately plain. It cuts every document into
-fixed-size pieces with a fixed overlap and pays no attention to where sentences
-or paragraphs end. It works, and it is not good.
-
-On a corpus of short posts it may not cut anything at all: `campus_life` comes
-out as 88 documents and 88 chunks, because almost nothing in it reaches 800
-characters. That is the baseline, not a bug — Milestone 3 is where you decide
-whether one post should stay one chunk.
-
-Your job in Milestone 3 is to replace the *body* of `split_documents` with a
-strategy that fits the documents you actually read in Milestone 1. Keep the
-name and the shape of what it returns — the rest of the pipeline calls it, and
-your README has to name the function that produced your chunks.
-
-If you get stuck for 30 minutes, `fallback_split` is the original. Switch back
-to it, write down what you saw, and move on. That's a real observation about
-your pipeline, not giving up.
+The campus_life corpus consists of short titled posts. The custom splitter
+uses a soft size target rather than cutting sentences. The original fixed
+window splitter remains below for comparison.
 """
 
 from dataclasses import dataclass
@@ -81,23 +64,48 @@ def fallback_split(
 
 
 def split_documents(documents: list[Document]) -> list[Chunk]:
+    """Pack whole paragraphs up to CHUNK_SIZE, repeating the title.
+
+    CHUNK_SIZE includes the title and is a soft limit: an oversized paragraph
+    stays intact. Body paragraphs do not overlap. The first paragraph is the
+    title in the supplied campus_life posts; untitled one-paragraph documents
+    are retained whole instead of producing an empty body chunk.
     """
-    Split documents into chunks. ⚠️ REPLACE THE BODY OF THIS IN MILESTONE 3.
+    if config.CHUNK_SIZE <= 0:
+        raise ValueError("CHUNK_SIZE must be positive")
+    if config.CHUNK_OVERLAP != 0:
+        raise ValueError("The paragraph chunker requires CHUNK_OVERLAP = 0")
 
-    Right now it just calls the fallback. That is the plain, generic behaviour
-    the brief is talking about.
+    chunks: list[Chunk] = []
+    for doc in documents:
+        paragraphs = [part.strip() for part in doc.text.split("\n\n") if part.strip()]
+        if not paragraphs:
+            continue
 
-    When you write your own strategy, set `produced_by` to
-    "chunker.py::split_documents" so your README's Sample Chunks section names
-    the right function. `app.py chunks` prints that string for you.
+        title, *body = paragraphs
+        pieces: list[str] = []
+        current: list[str] = []
+        for paragraph in body:
+            candidate = "\n\n".join([title, *current, paragraph])
+            if current and len(candidate) > config.CHUNK_SIZE:
+                pieces.append("\n\n".join([title, *current]))
+                current = []
+            current.append(paragraph)
+        if current:
+            pieces.append("\n\n".join([title, *current]))
+        elif not body:
+            pieces.append(title)
 
-    Things worth thinking about before you write any code:
-      - Are your documents short posts or long guides?
-      - Is the useful information in one sentence, or spread over a paragraph?
-      - Would splitting on paragraph breaks keep more thoughts intact than
-        splitting on a character count?
-    """
-    return fallback_split(documents)
+        chunks.extend(
+            Chunk(
+                text=text,
+                source=doc.source,
+                index=index,
+                produced_by="chunker.py::split_documents",
+            )
+            for index, text in enumerate(pieces)
+        )
+    return chunks
 
 
 def describe(chunks: list[Chunk]) -> str:
