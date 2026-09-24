@@ -278,6 +278,8 @@ GROUNDING_INSTRUCTION = """You answer questions using only the documents provide
 Rules:
 - Use only the information in the documents below. Do not use anything you know from elsewhere.
 - If the documents don't cover the question, say you don't have enough information. Do not guess.
+- Match facts to the exact building, service, or policy asked about; do not combine facts from different entities just because their excerpts discuss the same topic.
+- Answer every requested part, preserving exact numbers, units, time periods, and conditions such as payment restrictions. If any requested part is unsupported, state that limitation rather than filling it from another entity's excerpt.
 - Name the document your answer came from, using the filename given in each excerpt.
 - Be brief. Two or three sentences is usually enough."""
 

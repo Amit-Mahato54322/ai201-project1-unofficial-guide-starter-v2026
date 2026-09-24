@@ -1,0 +1,311 @@
+{
+  "when": "2026-09-23T20:36:14.800274",
+  "corpus": "campus_life",
+  "top_k": 5,
+  "threshold": 0.64,
+  "model": "gemini-3.5-flash-lite",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "fake_embeddings": false,
+  "grounding_instruction": "You answer questions using only the documents provided to you.\n\nRules:\n- Use only the information in the documents below. Do not use anything you know from elsewhere.\n- If the documents don't cover the question, say you don't have enough information. Do not guess.\n- Match facts to the exact building, service, or policy asked about; do not combine facts from different entities just because their excerpts discuss the same topic.\n- Answer every requested part, preserving exact numbers, units, time periods, and conditions such as payment restrictions. If any requested part is unsupported, state that limitation rather than filling it from another entity's excerpt.\n- Name the document your answer came from, using the filename given in each excerpt.\n- Be brief. Two or three sentences is usually enough.",
+  "retrieval": [
+    {
+      "question": "How are juniors and seniors ordered in the housing lottery before random tie-breaking?",
+      "results": [
+        {
+          "text": "On the housing lottery\n\nThe housing lottery is not random in the way most people assume. Rising sophomores get a number drawn at random, but juniors and seniors are ordered by accumulated credit hours first, and only tie-break randomly. That means a senior who took summer courses reliably beats a senior who didn't. Numbers come out the second week of March and selection runs over four evenings.",
+          "source": "admin_housing_lottery.txt",
+          "label": "admin_housing_lottery.txt#0",
+          "distance": 0.21477633714675903,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Registration and your adviser\n\nYou need an adviser hold lifted before you can register, and advisers get busy in the week before registration opens. Book two weeks out.\n\nRegistration times are staggered by credit hours, same as the housing lottery. Popular courses fill in the first two days.",
+          "source": "advising_registration.txt",
+          "label": "advising_registration.txt#0",
+          "distance": 0.6722366809844971,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Re: The Atrium\n\nAdding to what people have said about The Atrium. The wait figure of no queue matches what I've seen. If you're trying to eat between classes, go before 11:45 and it's a different building entirely.\n\nAlso worth saying: picked clean by 1:15 and not restocked again until the next morning. Nobody tells you this at orientation.",
+          "source": "dining_the_atrium_followup.txt",
+          "label": "dining_the_atrium_followup.txt#0",
+          "distance": 0.7375773787498474,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the parking permits\n\nStudent permits for the west lots go on sale in August and sell out in about three days. The east lot never sells out because it's a 12-minute walk. There is no waitlist — people who miss the window park on Verrill Street and walk in, which is legal but unmarked and confuses everyone.",
+          "source": "admin_parking_permits.txt",
+          "label": "admin_parking_permits.txt#0",
+          "distance": 0.7487269043922424,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Innisfree Hall — what it's actually like\n\nTransferred in last year, so take this with a grain of salt. Built 1991, renovated 2022. Rooms are doubles arranged as pairs sharing one bathroom between two rooms.\n\nThe good: the shared-bathroom-between-two-rooms arrangement is the best compromise on campus.\n\nThe bad: no air conditioning, which matters for the first three weeks of September.",
+          "source": "housing_innisfree_hall.txt",
+          "label": "housing_innisfree_hall.txt#0",
+          "distance": 0.756084144115448,
+          "produced_by": "chunker.py::split_documents"
+        }
+      ],
+      "matches_current_chunks": true
+    },
+    {
+      "question": "How much does one wash cost in Aldridge Hall, and what payment method do the machines accept?",
+      "results": [
+        {
+          "text": "Laundry in Aldridge Hall\n\nMachines take $1.75 wash, $1.50 dry, card only. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.\n\nBest time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.",
+          "source": "housing_aldridge_hall_laundry.txt",
+          "label": "housing_aldridge_hall_laundry.txt#0",
+          "distance": 0.27668124437332153,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Laundry in Old Brewhouse\n\nMachines take $1.50 wash, $1.50 dry, coin only, and the machines are old. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.\n\nBest time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.",
+          "source": "housing_old_brewhouse_laundry.txt",
+          "label": "housing_old_brewhouse_laundry.txt#0",
+          "distance": 0.40205466747283936,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Laundry in Innisfree Hall\n\nMachines take $1.75 wash, $1.75 dry, app-based. There are eight washers and six dryers for the building, which is the wrong ratio and means the dryers back up on Sunday evenings.\n\nBest time to do laundry here is Tuesday or Wednesday morning. Sunday after 6pm you will wait.",
+          "source": "housing_innisfree_hall_laundry.txt",
+          "label": "housing_innisfree_hall_laundry.txt#0",
+          "distance": 0.40864866971969604,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Calder Annexe — what it's actually like\n\nLaundry costs $2.00 wash, $1.75 dry, app-based. On noise: depends entirely on your cluster; there's no building-wide pattern.",
+          "source": "housing_calder_annexe.txt",
+          "label": "housing_calder_annexe.txt#1",
+          "distance": 0.41947513818740845,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Old Brewhouse — what it's actually like\n\nLaundry costs $1.50 wash, $1.50 dry, coin only, and the machines are old. On noise: sound carries strangely because of the original brick; a room two floors up can be louder than next door.",
+          "source": "housing_old_brewhouse.txt",
+          "label": "housing_old_brewhouse.txt#1",
+          "distance": 0.42428702116012573,
+          "produced_by": "chunker.py::split_documents"
+        }
+      ],
+      "matches_current_chunks": true
+    },
+    {
+      "question": "How many days into the semester can I change my meal plan, and where does a downgrade refund go?",
+      "results": [
+        {
+          "text": "On the meal plan changes\n\nYou can change your meal plan tier once, in the first ten days of the semester. After that it's locked. Downgrading refunds the difference to your student account; upgrading bills you immediately.",
+          "source": "admin_meal_plan_changes.txt",
+          "label": "admin_meal_plan_changes.txt#0",
+          "distance": 0.17629945278167725,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the dining dollars\n\nDeclining balance — what everyone calls dining dollars — rolls over from the autumn semester to the spring, but not from spring to the following autumn. Whatever is left in May disappears.",
+          "source": "admin_dining_dollars.txt",
+          "label": "admin_dining_dollars.txt#0",
+          "distance": 0.5703924894332886,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the add/drop deadline\n\nYou can add a course through the end of the second week. Dropping is a longer window — through the end of week six — but a drop after week two shows as a W on your transcript. Nothing anywhere on the registrar's site says this plainly, and students find out from each other.",
+          "source": "admin_add_drop_deadline.txt",
+          "label": "admin_add_drop_deadline.txt#0",
+          "distance": 0.6003845930099487,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the withdrawal deadline\n\nWithdrawal is a different thing from dropping and has a different date. Dropping ends at week six. Withdrawal runs to week ten, requires an adviser signature, and puts a W on the transcript that doesn't affect GPA. The two dates appear on different pages of the registrar's site and this catches people every year.",
+          "source": "admin_withdrawal_deadline.txt",
+          "label": "admin_withdrawal_deadline.txt#0",
+          "distance": 0.6214928030967712,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On-campus work\n\nLibrary and dining jobs post in the first week of each semester and go fast. Pay is the same across departments — the difference is whether you can study during the shift. Library desk: usually yes. Dining: no.\n\nMaximum is 20 hours a week during term. Most people find 10 to 12 is the point where it stops affecting coursework.",
+          "source": "money_jobs.txt",
+          "label": "money_jobs.txt#0",
+          "distance": 0.6381425261497498,
+          "produced_by": "chunker.py::split_documents"
+        }
+      ],
+      "matches_current_chunks": true
+    },
+    {
+      "question": "When does the library close during reading week compared with term time?",
+      "results": [
+        {
+          "text": "Library hours and where to actually sit\n\nOpen until 2am during term, until 10pm during reading week, which is backwards and catches everyone out every single year.\n\nThird floor is silent and enforced. Second floor is quiet in theory. The basement has the only outlets at every seat and is therefore full from about 10am.",
+          "source": "study_library_hours.txt",
+          "label": "study_library_hours.txt#0",
+          "distance": 0.4485495686531067,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Noise levels in Calder Annexe\n\nAsked about this a lot so writing it down. Depends entirely on your cluster; there's no building-wide pattern.\n\nIf you're someone who needs quiet to work, the library is open until 2am during term and that's what most people in this building end up doing.",
+          "source": "housing_calder_annexe_noise.txt",
+          "label": "housing_calder_annexe_noise.txt#0",
+          "distance": 0.4843345880508423,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the library holds\n\nYou can place a hold on a checked-out book and it usually arrives in two to three days. What isn't advertised: the interlibrary system covers eleven other institutions and requests through it take about a week but almost never fail.",
+          "source": "admin_library_holds.txt",
+          "label": "admin_library_holds.txt#0",
+          "distance": 0.48928868770599365,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Noise levels in Morrow House\n\nAsked about this a lot so writing it down. Loud until about 1am on weekends, no enforced quiet hours.\n\nIf you're someone who needs quiet to work, the library is open until 2am during term and that's what most people in this building end up doing.",
+          "source": "housing_morrow_house_noise.txt",
+          "label": "housing_morrow_house_noise.txt#0",
+          "distance": 0.4939405918121338,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "Workload for HIST 118 Modern World History\n\nPeople keep asking so: a lot of reading, about 120 pages a week, but no problem sets. That's real time, not optimistic time.\n\nIt's front-loaded — the first month is heavier than the rest, partly because you're learning the format.",
+          "source": "course_hist_118_workload.txt",
+          "label": "course_hist_118_workload.txt#0",
+          "distance": 0.537285566329956,
+          "produced_by": "chunker.py::split_documents"
+        }
+      ],
+      "matches_current_chunks": true
+    },
+    {
+      "question": "What minimum grade earns a pass under the pass/fail option?",
+      "results": [
+        {
+          "text": "On the pass/fail option\n\nAny course outside your major can be taken pass/fail, and — the part nobody mentions — you can declare it as late as week eight, after you've seen your midterm. A pass needs a C- or better. Two per year, maximum eight across a degree.",
+          "source": "admin_pass_fail_option.txt",
+          "label": "admin_pass_fail_option.txt#0",
+          "distance": 0.329098641872406,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "STAT 150 Applied Statistics — assessment\n\nThree equally weighted midterms, no final. No curve, but the lowest midterm is dropped.\n\nThe dropped midterm makes the first one low-stakes; use it to learn the format.",
+          "source": "course_stat_150_exams.txt",
+          "label": "course_stat_150_exams.txt#0",
+          "distance": 0.5877347588539124,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the graduation requirements\n\n120 credit hours, a completed major, and the general education requirements. The one that trips people is the writing-intensive requirement: two courses, and they must be taken in different departments. Check this in your third year, not your fourth.",
+          "source": "admin_graduation_requirements.txt",
+          "label": "admin_graduation_requirements.txt#0",
+          "distance": 0.6338797807693481,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "STAT 150 Applied Statistics\n\nThe one piece of advice: the dropped midterm makes the first one low-stakes; use it to learn the format.",
+          "source": "course_stat_150.txt",
+          "label": "course_stat_150.txt#1",
+          "distance": 0.678195595741272,
+          "produced_by": "chunker.py::split_documents"
+        },
+        {
+          "text": "On the grade appeals\n\nA grade appeal starts with the instructor and has to be raised within fifteen days of the grade posting. Only after that does it go to the department. Skipping the instructor step gets the appeal returned, which wastes most of the fifteen days.",
+          "source": "admin_grade_appeals.txt",
+          "label": "admin_grade_appeals.txt#0",
+          "distance": 0.6795448064804077,
+          "produced_by": "chunker.py::split_documents"
+        }
+      ],
+      "matches_current_chunks": true
+    }
+  ],
+  "refusals": [
+    {
+      "question": "What is the capital of Mongolia?",
+      "gate": {
+        "passed": false,
+        "best_distance": 0.824593186378479,
+        "threshold": 0.64
+      },
+      "pipeline_output": {
+        "question": "What is the capital of Mongolia?",
+        "refused": true,
+        "best_distance": 0.824593186378479,
+        "threshold": 0.64,
+        "sources": [],
+        "prompt": null,
+        "answer": "I don't have enough information about that."
+      },
+      "model_calls": 0
+    },
+    {
+      "question": "How do I change the oil in a diesel engine?",
+      "gate": {
+        "passed": false,
+        "best_distance": 0.9231168627738953,
+        "threshold": 0.64
+      },
+      "pipeline_output": {
+        "question": "How do I change the oil in a diesel engine?",
+        "refused": true,
+        "best_distance": 0.9231168627738953,
+        "threshold": 0.64,
+        "sources": [],
+        "prompt": null,
+        "answer": "I don't have enough information about that."
+      },
+      "model_calls": 0
+    },
+    {
+      "question": "Who won the 1994 World Cup?",
+      "gate": {
+        "passed": false,
+        "best_distance": 0.8858600854873657,
+        "threshold": 0.64
+      },
+      "pipeline_output": {
+        "question": "Who won the 1994 World Cup?",
+        "refused": true,
+        "best_distance": 0.8858600854873657,
+        "threshold": 0.64,
+        "sources": [],
+        "prompt": null,
+        "answer": "I don't have enough information about that."
+      },
+      "model_calls": 0
+    },
+    {
+      "question": "What is the recommended dosage of ibuprofen for a headache?",
+      "gate": {
+        "passed": false,
+        "best_distance": 0.8442317247390747,
+        "threshold": 0.64
+      },
+      "pipeline_output": {
+        "question": "What is the recommended dosage of ibuprofen for a headache?",
+        "refused": true,
+        "best_distance": 0.8442317247390747,
+        "threshold": 0.64,
+        "sources": [],
+        "prompt": null,
+        "answer": "I don't have enough information about that."
+      },
+      "model_calls": 0
+    },
+    {
+      "question": "How do I write a for loop in Rust?",
+      "gate": {
+        "passed": false,
+        "best_distance": 0.8906915187835693,
+        "threshold": 0.64
+      },
+      "pipeline_output": {
+        "question": "How do I write a for loop in Rust?",
+        "refused": true,
+        "best_distance": 0.8906915187835693,
+        "threshold": 0.64,
+        "sources": [],
+        "prompt": null,
+        "answer": "I don't have enough information about that."
+      },
+      "model_calls": 0
+    }
+  ],
+  "sample_chunks_cli": "100 chunks total. Showing 5, spread across the corpus.\n\nPaste these into your README under Sample Chunks. The rubric asks\nfor the source file and the function that produced them — both are\nprinted for you below.\n\n======================================================================\nChunk 1  |  source: admin_add_drop_deadline.txt#0  |  produced by: chunker.py::split_documents\n======================================================================\nOn the add/drop deadline\n\nYou can add a course through the end of the second week. Dropping is a longer window — through the end of week six — but a drop after week two shows as a W on your transcript. Nothing anywhere on the registrar's site says this plainly, and students find out from each other.\n\n======================================================================\nChunk 2  |  source: course_cs_210.txt#0  |  produced by: chunker.py::split_documents\n======================================================================\nCS 210 Data Structures\n\nI'm a junior and I've done this twice now. Format is lecture with weekly labs; slides go up after class, not before. Assessment: two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.\n\nExpect 8 to 10 hours a week outside class.\n\n======================================================================\nChunk 3  |  source: course_math_220_workload.txt#0  |  produced by: chunker.py::split_documents\n======================================================================\nWorkload for MATH 220 Linear Algebra\n\nPeople keep asking so: 6 to 8 hours a week, almost all of it on problem sets. That's real time, not optimistic time.\n\nIt's front-loaded — the first month is heavier than the rest, partly because you're learning the format.\n\n======================================================================\nChunk 4  |  source: dining_the_ridgeway_cafe_followup.txt#0  |  produced by: chunker.py::split_documents\n======================================================================\nRe: The Ridgeway Café\n\nAdding to what people have said about The Ridgeway Café. The wait figure of 10 to 15 minutes at 12:30 matches what I've seen. If you're trying to eat between classes, go before 11:45 and it's a different building entirely.\n\nAlso worth saying: seating is tight; about 40 seats for a building of 900. Nobody tells you this at orientation.\n\n======================================================================\nChunk 5  |  source: housing_morrow_house.txt#0  |  produced by: chunker.py::split_documents\n======================================================================\nMorrow House — what it's actually like\n\nJust finished a year in this building. Built 1954, partially renovated 2008. Rooms are singles and doubles, hall bathrooms.\n\nThe good: cheapest housing tier by about $900 a year, and the singles are real singles.\n\nThe bad: known damp problem on the ground floor; two rooms were taken offline in 2024.\n\nFor each one, ask: could someone answer a question using only this,\nwithout reading what came before or after?\n",
+  "model_calls": 0
+}

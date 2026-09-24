@@ -376,34 +376,153 @@ revision of the frozen 4/5 target used for this before/after comparison.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** Only the grounding instruction in
+`generate.py::GROUNDING_INSTRUCTION`: two rules now require the model to match
+facts to the exact requested building/service/policy and preserve every requested
+number, time period, and condition. Retrieval, top-k, gate threshold, chunking,
+embedding model, generation model, questions, and original criteria stay fixed.
 
-**Why I picked it:**
+**Why I picked it:** Aldridge retrieval includes other buildings' laundry rules;
+the prompt change attempts to prevent generation from mixing their facts.
+This is a preventive experiment motivated by observed distractors, not a fix
+for an observed wrong answer.
 
-<!-- Connect it to a specific diagnosis above in one sentence. If you can't,
-     you picked a fix because it sounded impressive. -->
+The measurement helper `tools/capture_eval_evidence.py::main` only records
+retrieved text, sample chunks, and gate refusals. It does not change the answer
+pipeline and makes no model calls. No scorer.py was added; correctness was
+reviewed manually against the original reference facts.
 
 ### Run Log — After
 
-<!-- Same format, same five criteria, three runs each.
-     `python run_eval.py --label after` -->
+Commands executed after the prompt change, with no pipeline edits between runs:
+
+```bash
+.venv/bin/python -u run_eval.py --label after
+.venv/bin/python tools/capture_eval_evidence.py --label after
+```
+
+The collector initially hit an ONNX temporary-directory sandbox restriction;
+it succeeded when rerun with filesystem permission. The evaluation itself
+completed successfully and was not rerun.
+
+[Full after answers](results/run_2026-09-23_2035_after.md),
+[fresh retrieval and refusal evidence](results/unit2_after_evidence.json),
+[five printed chunks](results/unit2_after_chunks.txt), and
+[manual scoring notes](results/unit2_after_review.md).
+
+Actual evaluation usage output:
+
+```text
+15 model calls this session, 9478 tokens (8985 in, 493 out)
+```
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Sample chunks preserve context and complete sentences | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers preserve exact facts and conditions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
-**Did it help?**
+Criteria 2 and 5 were reviewed for all fifteen new answers. Each names a
+retrieved filename and contains all required reference facts without conflicting
+additions. The third library answer has awkward grammar but still assigns 2am
+to term time and 10pm to reading week, so it passes the factual criterion.
+Criteria 1, 3, and 4 use deterministic checks, repeated in all three columns:
+all five sufficient passages are present; all five actual refusals match the
+required string with zero calls; all five sample chunks keep their titles and
+whole body sentences. All 25 retrieved passages also match the earlier saved
+passages in order and match chunks generated from the current source documents.
 
-<!-- Say plainly whether it did, and how you know. If it made things worse,
-     say that — a change that backfired, honestly reported, earns full credit
-     and is more interesting than one that worked. What matters is that you can
-     tell.
+#### Criterion 1 — actual retrieved text
 
-     Milestone 4. -->
+From results/unit2_after_evidence.json; retrieved by `store.py::search`,
+produced by `chunker.py::split_documents`, recorded by
+`tools/capture_eval_evidence.py::main`. Source: admin_meal_plan_changes.txt#0.
+
+```text
+On the meal plan changes
+
+You can change your meal plan tier once, in the first ten days of the semester. After that it's locked. Downgrading refunds the difference to your student account; upgrading bills you immediately.
+```
+
+#### Criterion 2 — actual answer naming a source
+
+From results/run_2026-09-23_2035_after.md, Aldridge question, Run 1.
+Produced by `generate.py::answer_from_chunks`, recorded by
+`run_eval.py::write_report`.
+
+```text
+One wash costs $1.75 in Aldridge Hall, and the machines accept card only (housing_aldridge_hall_laundry.txt).
+```
+
+#### Criterion 3 — actual pipeline refusal
+
+From results/unit2_after_evidence.json, produced by `app.py::ask_pipeline`
+and recorded by `tools/capture_eval_evidence.py::main`.
+
+```json
+{
+  "question": "What is the capital of Mongolia?",
+  "gate": {
+    "passed": false,
+    "best_distance": 0.824593186378479,
+    "threshold": 0.64
+  },
+  "pipeline_output": {
+    "question": "What is the capital of Mongolia?",
+    "refused": true,
+    "best_distance": 0.824593186378479,
+    "threshold": 0.64,
+    "sources": [],
+    "prompt": null,
+    "answer": "I don't have enough information about that."
+  },
+  "model_calls": 0
+}
+```
+
+#### Criterion 4 — actual sample chunk
+
+From results/unit2_after_chunks.txt; produced by
+`chunker.py::split_documents` and printed by `app.py::cmd_chunks`.
+Source: course_cs_210.txt#0.
+
+```text
+CS 210 Data Structures
+
+I'm a junior and I've done this twice now. Format is lecture with weekly labs; slides go up after class, not before. Assessment: two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
+
+Expect 8 to 10 hours a week outside class.
+```
+
+#### Criterion 5 — actual answer preserving exact facts
+
+From results/run_2026-09-23_2035_after.md, library question, Run 1.
+Produced by `generate.py::answer_from_chunks`, recorded by
+`run_eval.py::write_report`.
+
+```text
+Based on the provided documents, the library closes at 10pm during reading week and stays open until 2am during term.
+
+Source: study_library_hours.txt
+```
+
+### Before and after comparison
+
+| Criterion | Before: Runs 1 / 2 / 3 | After: Runs 1 / 2 / 3 | Change |
+|---|---|---|---|
+| 1. Retrieved answer | 5/5 / 5/5 / 5/5 | 5/5 / 5/5 / 5/5 | None |
+| 2. Source named | 5/5 / 5/5 / 5/5 | 5/5 / 5/5 / 5/5 | None |
+| 3. Out-of-corpus gate | 5/5 / 5/5 / 5/5 | 5/5 / 5/5 / 5/5 | None |
+| 4. Chunk context | 5/5 / 5/5 / 5/5 | 5/5 / 5/5 / 5/5 | None |
+| 5. Exact facts | 5/5 / 5/5 / 5/5 | 5/5 / 5/5 / 5/5 | None |
+
+**Did it help?** No measured improvement: every criterion scored 5/5 before
+and after, so the change preserved performance on this sample but did not
+establish a benefit. All fifteen after answers were generated with caching off.
+The stricter instruction is retained as an explicit requirement, not as a
+proven accuracy gain; a held-out challenge set is needed to test that claim.
 
 ## What's Still Broken
 
