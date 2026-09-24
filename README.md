@@ -322,22 +322,26 @@ During reading week, the library is open until 10pm, whereas during term time it
 
 ## Verdicts
 
-<!-- MET or MISSED for each of the five, against the target you wrote last
-     unit — not a new one. Plus a sentence on how you decided. That sentence
-     matters most where it was close.
-
-     If your target said 4 of 5 and your runs came out 4, 3, 4, that's a MISS.
-     The target has to hold, not show up occasionally.
-
-     Milestone 2. -->
+The original targets in criteria.md are unchanged. A criterion must meet its
+target in every generated-answer run, not just on average.
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunks contain the answer | MET | All five questions have a sufficient chunk in the saved top-five retrieval evidence, exceeding 4/5; all three evaluation runs record matching source sets and best distances. |
+| 2 | Every answer names a source | MET | Each of the five answers in each of the three runs names a retrieved filename inside its answer, meeting 5/5 every time. |
+| 3 | Gate stops out-of-corpus questions | MET | The deterministic gate pass refused 5/5 against a 4/5 target; the earlier pipeline evidence confirms the exact refusal and zero calls for all five. |
+| 4 | Sample chunks preserve context and complete sentences | MET | All five saved sample chunks retain the source title and complete body sentences, exceeding 4/5; this deterministic check is measured once. |
+| 5 | Answers preserve exact facts and conditions | MET | All fifteen answers contain every required fact from the reference rows, with no conflicting or unsupported additions, exceeding 4/5 in each run. |
+
+**Challenge to these verdicts:** The strongest argument against MET is about
+measurement coverage, not a failing answer: the before evaluation did not save
+chunk text, and its out-of-scope loop checked gate decisions without recording
+actual pipeline refusal strings or call counts. Criteria 1, 3, and 4 therefore
+also rely on the explicitly linked earlier evidence. Matching retrieval
+settings, source sets, and distances support that comparison, but do not make
+those earlier records new measurements. The after evaluation will capture fresh
+retrieval text, sample chunks, and pipeline refusals to make its evidence direct.
+No original target is lowered or revised.
 
 ## Diagnoses
 
