@@ -345,23 +345,34 @@ No original target is lowered or revised.
 
 ## Diagnoses
 
-<!-- For each miss: which stage caused it, and how. The stage alone isn't
-     enough — you need the mechanism.
+No original criterion was missed. There is no observed wrong answer to assign
+to loading, chunking, embedding, retrieval, or generation.
 
-     Not a diagnosis: "Question 3 didn't work."
-     A diagnosis:     "Question 3 asks about laundry costs. The answer is in
-                       one sentence that got split across two chunks, so
-                       neither chunk on its own contains it."
+The targets were safe for this small sample: four criteria allow one miss,
+the five questions are direct matches to short source posts, and the gate was
+calibrated using the same out-of-scope questions later used for evaluation.
+Passing these tests is not evidence of broad reliability.
 
-     The five stages: loading → chunking → embedding → retrieval → generation.
+One observed weakness is **retrieval of distractors**. For the Aldridge wash
+question, semantic retrieval also returns Old Brewhouse and Innisfree laundry
+chunks. Those chunks discuss the same topic but give different prices or
+payment methods. The mechanism is topic similarity across buildings; the gate
+checks only the closest result and does not remove other misleading excerpts.
+The potential downstream failure is generation combining a price from one
+building with a payment method from another. This did not occur in the saved
+fifteen answers, so it is a risk diagnosis, not a claimed criterion miss.
 
-     Look for a pattern. If three misses all ask about numbers, that's one
-     problem, not three.
+The single experiment will tighten the generation grounding instruction to
+keep facts attached to the requested entity and preserve every requested
+condition. It may not help: the current answers already score 5/5, prompt
+instructions cannot recover facts missing from retrieval, and an overly strict
+instruction could increase refusals. The experiment can detect a regression
+but cannot demonstrate higher accuracy if both runs stay at the ceiling.
 
-     Missed nothing? Say so, then say honestly whether your targets were set
-     low, and which one you'd tighten and to what.
-
-     Milestone 3. -->
+For the next unit, I would tighten criterion 5 to require **5/5 complete,
+correct answers in every run**, and pre-register a separate held-out set with
+paraphrases and confusing building names. This is a future proposal, not a
+revision of the frozen 4/5 target used for this before/after comparison.
 
 ## The Improvement
 
