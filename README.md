@@ -189,6 +189,21 @@ changes to that implementation.
 It measured five covered and five unrelated questions, then changed the cutoff
 from 0.6 to 0.64. I haven’t adjusted that cutoff further.
 
+**3. Unit 2.** I asked Codex to read the saved before evaluation and complete
+the criterion-level run log with actual excerpts and producing functions. It
+reviewed the answers manually because scorer.py does not exist, challenged the
+evidence coverage, and documented all five original criteria as MET.
+
+**4. Unit 2.** I asked Codex to complete the remaining milestones and commits.
+It identified retrieval distractors without inventing a failed answer, added two
+grounding rules in generate.py, and ran the after evaluation with caching off
+(15 real Gemini calls). It also wrote and ran an evidence collector for fresh
+retrieval passages, chunk samples, and exact zero-call refusals, then compared
+the outputs with the unchanged criteria. Codex drafted the diagnoses, verdicts,
+limitations, and reflection. The measured scores stayed at 5/5 for every
+criterion; the write-up does not claim a proven improvement. The solo review
+was performed with Codex rather than a separate Claude session or breakout group.
+
 ---
 
 # Unit 2
@@ -526,17 +541,47 @@ proven accuracy gain; a held-out challenge set is needed to test that claim.
 
 ## What's Still Broken
 
-<!-- For each criterion still missed after your fix: what you'd do about it,
-     and why you stopped where you did.
+No original criterion remains missed after the change. That conclusion is
+limited to these five covered questions, five unrelated questions, and five
+sample chunks; it does not establish reliability on unseen inputs.
 
-     "I ran out of time" is fine if it's true. Pretending nothing is left is
-     not.
-
-     Milestone 5. -->
+- **Retrieval still includes distractors.** The prompt does not remove other
+  buildings' laundry rules. Next I would pre-register questions with confusing
+  building names and compare an entity-aware retrieval filter or hybrid search
+  on that separate set. I stopped after the single prompt experiment so the
+  before/after result has one pipeline change to interpret.
+- **The gate was tested on its calibration set.** Perfect rejection here may
+  hide failures on nearby unsupported campus questions. Next I would test held-out
+  campus-related questions whose answers are absent and relevant paraphrases
+  near the cutoff, measuring both false acceptance and false refusal before
+  changing the threshold.
+- **The factual test is small and at the ceiling.** Three repetitions measure
+  variation on five known questions, not general accuracy. The tightened prompt
+  has no demonstrated benefit yet. A larger held-out set and claim-level source
+  checks would be needed before claiming improvement.
+- **The before evidence is split across files.** Its report saves answers,
+  source names, and distances, while chunk and exact refusal evidence comes
+  from earlier records. Fresh after evidence confirms the same retrieved texts
+  and current chunks, but cannot retroactively add missing before telemetry.
+  Future evaluations should capture passages, refusals, and call counts together.
 
 ## What I'd Do Differently
 
-<!-- Knowing what you know now — which of your five criteria would you write
-     differently, and why?
+I would keep the original criteria visible but write the next unit's tests
+before tuning on a separate development set. Criterion 1 should measure answer
+coverage on held-out questions and also report distracting results, because one
+correct chunk among five can hide four misleading chunks. Criterion 2 should
+check that each factual claim is supported by its cited passage, not merely that
+a filename appears. Criterion 3 needs near-domain unsupported questions and
+relevant paraphrases, not only obviously unrelated topics. Criterion 4 should
+sample difficult paragraph boundaries as well as evenly spaced chunks. I would
+tighten criterion 5 to 5/5 complete, factually correct answers in every run and
+include a separate held-out challenge set. These are future proposals; the
+original criteria.md and the targets used in this unit remain unchanged.
 
-     Milestone 5. -->
+The most surprising result was that stricter grounding changed no scores at
+all. The hypothesis was that explicit entity matching would help with confusing
+laundry excerpts, but the baseline already answered them correctly. The honest
+finding is no measured gain, rather than a claim that the new prompt is better.
+
+Submission repository: https://github.com/Amit-Mahato54322/ai201-project1-unofficial-guide-starter-v2026
