@@ -199,27 +199,126 @@ from 0.6 to 0.64. I haven’t adjusted that cutoff further.
 
 ## Run Log — Before
 
-<!-- Your five criteria, three runs each. `python run_eval.py --label before`
-     runs the questions, puts the OUT_OF_SCOPE ones through the gate, and
-     writes it all into results/ for you. Targets come from criteria.md; the
-     verdict column is your call.
+Evaluation file: [Saved before evaluation](results/run_2026-09-23_1942_before.md).
 
-     Criterion 3 is measured in one deterministic pass rather than three, so
-     the same number goes in all three run columns. That's correct, not lazy.
-
-     Milestone 1. -->
+The evaluation asked all five questions three times with response caching
+disabled. There is no scorer.py, so the saved answers were reviewed manually
+against criteria.md.
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Sample chunks preserve context and complete sentences | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers preserve exact facts and conditions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
-<!-- Underneath, paste the REAL output for each criterion from one of your
-     runs — the actual text your system produced, not a description of it.
-     Name the file and function that produced it. -->
+For criterion 1, the saved retrieval passages contain the required facts
+for all five questions. The evaluation records the same retrieved source
+sets and matching best distances across all three runs. Passage evidence
+comes from [the earlier retrieval record](results/milestone4_retrieval.json);
+the evaluation itself records source names and distances, not passage text.
+This assessment reuses that saved retrieval evidence for the same corpus,
+default index, and top-k of 5.
+
+For criterion 2, all fifteen generated answers name a retrieved source
+filename inside the answer itself.
+
+For criterion 3, the evaluation refused all five out-of-scope questions.
+This deterministic check ran once, so its count is repeated across the
+three columns. Earlier pipeline checks also recorded the exact refusal
+text and zero model calls; that additional evidence is identified below.
+
+For criterion 4, all five saved samples in the Unit 1 Sample Chunks
+section retain their titles and complete body sentences. This reuses the
+single deterministic chunk review, repeated across the three columns,
+not three new chunk measurements.
+
+For criterion 5, all five answers in each run include the required facts:
+credit-hour priority; $1.75 and card-only payment; ten days and a refund
+to the student account; 10pm during reading week versus 2am during term;
+and C- or better. No conflicting or unsupported claim was found when
+comparing the answers with the saved retrieved passages.
+
+Although the scores are identical, the answer wording varies between
+runs. run_eval.py::run_once explicitly passes cache=False to generation.
+
+### Criterion 1 — actual retrieved text
+
+Evidence file: results/milestone4_retrieval.md.
+Retrieved by store.py::search; chunk produced by
+chunker.py::split_documents.
+
+Source: admin_meal_plan_changes.txt#0
+
+```text
+On the meal plan changes
+
+You can change your meal plan tier once, in the first ten days of the semester. After that it's locked. Downgrading refunds the difference to your student account; upgrading bills you immediately.
+```
+
+### Criterion 2 — actual answer naming a source
+
+Evidence file: results/run_2026-09-23_1942_before.md, Aldridge question,
+Run 1. Produced by generate.py::answer_from_chunks and recorded by
+run_eval.py::write_report.
+
+```text
+One wash in Aldridge Hall costs $1.75, and the machines accept card only.
+
+Source: housing_aldridge_hall_laundry.txt
+```
+
+### Criterion 3 — actual gate results
+
+Evidence file: results/run_2026-09-23_1942_before.md.
+Produced by run_eval.py::check_out_of_scope using gate.py::check.
+
+| Out-of-scope question | Best distance | Gate |
+|---|---|---|
+| What is the capital of Mongolia? | 0.825 | refused |
+| How do I change the oil in a diesel engine? | 0.923 | refused |
+| Who won the 1994 World Cup? | 0.886 | refused |
+| What is the recommended dosage of ibuprofen for a headache? | 0.844 | refused |
+| How do I write a for loop in Rust? | 0.891 | refused |
+
+Additional saved pipeline evidence from
+results/milestone4_answer_checks.md, produced by app.py::ask_pipeline:
+
+Question: What is the capital of Mongolia?
+
+- Best distance: 0.824593
+- Refused: True
+- Model calls: 0
+
+```text
+I don't have enough information about that.
+```
+
+### Criterion 4 — actual sample chunk
+
+Evidence: the Unit 1 Sample Chunks section of this README.
+Produced by chunker.py::split_documents and printed by app.py::cmd_chunks.
+
+Source: course_cs_210.txt#0
+
+```text
+CS 210 Data Structures
+
+I'm a junior and I've done this twice now. Format is lecture with weekly labs; slides go up after class, not before. Assessment: two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
+
+Expect 8 to 10 hours a week outside class.
+```
+
+### Criterion 5 — actual answer preserving the required facts
+
+Evidence file: results/run_2026-09-23_1942_before.md, library question,
+Run 1. Produced by generate.py::answer_from_chunks and recorded by
+run_eval.py::write_report.
+
+```text
+During reading week, the library is open until 10pm, whereas during term time it is open until 2am. (Source: `study_library_hours.txt`)
+```
 
 ## Verdicts
 
